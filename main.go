@@ -577,6 +577,14 @@ func composeMessage(replyMsg *fbb.Message) {
 		os.Exit(1)
 	}
 
+	// Here's a good place to set delivery options
+	askReceipt := false
+	fmt.Print("Request message receipt? [y/N]: ")
+	ans := readLine()
+	if strings.EqualFold("y", ans) {
+		askReceipt = true
+	}
+
 	fmt.Print(`Subject: `)
 	if replyMsg != nil {
 		subject := strings.TrimSpace(strings.TrimPrefix(replyMsg.Subject(), "Re:"))
@@ -640,6 +648,10 @@ func composeMessage(replyMsg *fbb.Message) {
 	}
 
 	// END Read body
+
+	if askReceipt {
+		msg.SetBody(msg.String() + "\n[Message receipt requested]")
+	}
 
 	fmt.Print("\n")
 
